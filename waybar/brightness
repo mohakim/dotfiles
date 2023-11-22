@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+iDIR=~/.config/mako/icons
+brightnessFile="/tmp/current_brightness"
+lock_file="/tmp/brightness_lock"
+min_interval=0.3  # Minimum interval in seconds
+
+# Initialize or update the brightness file
+initialize_brightness() {
+    if [ ! -f "$brightnessFile" ]; then
+        ddcutil getvcp 10 --brief | awk -F 'current value =|, max value =' '{print $2}' | tr -d ' ' > "$brightnessFile"
+    fi
+}
+
+if [[ -f "$lock_file" ]]; then
+    file_age=$(($(date +%s) - $(stat -c %Y "$lock_file")))
+    if [[ $file_age -lt $min_interval ]]; then
+        exit 0
+    fi
+fi
+
+touch "$lock_file"
+
+# Get current brightness from file
+get_backlight() {
+    if [ -f "$brightnessFile" ]; then
+        cat "$brightnessFile"
+    else
+        initialize_brightness
+        cat "$brightnessFile"
+    fi
+}
+
+# Get icon based on brightness level
+get_icon() {
+    current=$1
+
+    if [[ "$current" -le 20 ]]; then
+        icon="$iDIR/brightness-20.png"
+    elif [[ "$current" -le 40 ]]; then
+        icon="$iDIR/brightness-40.png"
+    elif [[ "$current" -le 60 ]]; then
+        icon="$iDIR/brightness-60.png"
+    elif [[ "$current" -le 80 ]]; then
+        icon="$iDIR/brightness-80.png"
+    else
+        icon="$iDIR/brightness-100.png"
+    fi
+}
+
+#notification
+notify_user() {
+    current=$1
+    get_icon "$current"
+    notify-send -h string:x-canonical-private-synchronous:sys-notify -u low -i "$icon" "Brightness : ${current}%"
+}
+
+
+# Change brightness
+change_backlight() {
+    direction=$1
+    current=$(get_backlight)
+    increment=10
+
+    if [[ "$direction" == "+" ]]; then
+        new_brightness=$((current + increment))
+    elif [[ "$direction" == "-" ]]; then
+        new_brightness=$((current - increment))
+    fi
+
+    new_brightness=$((new_brightness > 100 ? 100 : new_brightness))
+    new_brightness=$((new_brightness < 0 ? 0 : new_brightness))
+
+    echo -n "$new_brightness" > "$brightnessFile"
+    ddcutil setvcp 10 $new_brightness >/dev/null
+    echo -n "$new_brightness" > /sys/class/backlight/nvidia_0/brightness
+    notify_user "$new_brightness"
+}
+
+initialize_brightness
+
+# Execute accordingly
+case "$1" in
+    --inc)
+        change_backlight '+'
+        ;;
+    --dec)
+        change_backlight '-'
+        ;;
+    *)
+        get_backlight
+        ;;
+esac

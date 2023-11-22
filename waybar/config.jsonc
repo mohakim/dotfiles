@@ -1,1 +1,113 @@
-/home/mohakim/.config/HyprV/waybar/conf/v1-config.jsonc
+{
+  "layer": "top",
+  "position": "top",
+  "mod": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "height": 50,
+  "modules-left": [
+      "clock",
+      "custom/weather",
+      "hyprland/workspaces"
+  ],
+  "modules-center": ["hyprland/window"],
+  "modules-right": [
+      "backlight",
+      "pulseaudio",
+      "battery",
+      "tray",
+      "custom/light_dark",
+      "custom/lock_screen",
+      "custom/power_btn"
+  ],
+
+  "hyprland/window": {
+      "format": "{}"
+  },
+
+  "hyprland/workspaces": {
+      "disable-scroll": true,
+      "all-outputs": true,
+      "on-click": "activate"
+  },
+
+  "custom/power_btn": {
+      "format": "",
+      "on-click": "sh -c '(sleep 0.5s; wlogout --protocol layer-shell)' & disown",
+      "tooltip": false
+  },
+
+  "custom/lock_screen": {
+      "format": "",
+      "on-click": "sh -c '(sleep 0.5s; swaylock)' & disown",
+      "tooltip": false
+  },
+
+  "tray": {
+      "icon-size": 18,
+      "spacing": 10
+  },
+
+  
+  "backlight": {
+      "device": "nvidia_0",
+      "format": "{icon} {percent}%",
+      "format-icons": ["󰃞 ", "󰃟 ", "󰃠 "],
+      "on-scroll-up": "~/.config/waybar/brightness --inc",
+      "on-scroll-down": "~/.config/waybar/brightness --dec",
+      "min-length": 6
+  },
+
+  "custom/light_dark": {
+    "format": "󰐾",
+    "on-click": "~/.config/waybar/baraction light",
+    "tooltip": false
+  },
+
+  "battery": {
+      "states": {
+          "good": 95,
+          "warning": 30,
+          "critical": 20
+      },
+      "format": "{icon} {capacity}%",
+      "format-charging": " {capacity}%",
+      "format-plugged": " {capacity}%",
+      "format-alt": "{time} {icon}",
+      "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+  },
+
+  "clock": {
+      "format": "{:%H:%M}",
+      "tooltip-format": "{:  %A, %e %B %Y}"
+  },
+
+  "custom/weather": {
+      "tooltip" : true,
+      "format" : "{}",
+      "interval" : 30,
+      "exec" : "python3 ~/.config/waybar/waybar-wttr.py",
+      "return-type" : "json"
+  },
+
+  "pulseaudio": {
+      "format": "{icon} {volume}%",
+      "tooltip": false,
+      "format-muted": " Muted",
+      "on-click": "~/.config/waybar/volume --toggle",
+      "on-click-right": "pavucontrol",
+      "on-scroll-up": "~/.config/waybar/volume --inc",
+      "on-scroll-down": "~/.config/waybar/volume --dec",
+      "scroll-step": 5,
+      "format-icons": {
+          "headphone": " ",
+          "hands-free": " ",
+          "headset": " ",
+          "phone": " ",
+          "portable": " ",
+          "car": " ",
+          "default": [" ", " ", " "]
+      }
+  }
+}

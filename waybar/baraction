@@ -1,0 +1,49 @@
+#!/bin/sh
+# Define the version and state file
+STATE_FILE=~/.config/waybar/theme_state
+
+# Read the current theme state
+if [ -f "$STATE_FILE" ]; then
+    THEMEIS=$(cat "$STATE_FILE")
+else
+    THEMEIS="dark"  # Default to dark if state file doesn't exist
+fi
+
+# Toggle the theme
+if [ "$THEMEIS" = "light" ]; then
+    # Switch to dark theme
+    SWITCHTO="-dark"
+    ICON_THEME="Papirus-Dark"
+    MODESTR="Dark"
+    echo "dark" > "$STATE_FILE"
+else
+    # Switch to light theme
+    SWITCHTO=""
+    ICON_THEME="Papirus-Light"
+    MODESTR="Light"
+    echo "light" > "$STATE_FILE"
+fi
+
+# Update icon and GTK themes
+xfconf-query -c xsettings -p /Net/IconThemeName -s "$ICON_THEME"
+gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
+xfconf-query -c xsettings -p /Net/ThemeName -s "Adwaita$SWITCHTO"
+gsettings set org.gnome.desktop.interface gtk-theme "Adwaita$SWITCHTO"
+
+# Show a message
+notify-send -h string:x-canonical-private-synchronous:sys-notify -u low "Switching to $MODESTR Mode"
+
+# Update Waybar, Wofi, and Mako configurations
+CSS_FILE=~/.config/waybar/style$SWITCHTO.css
+ln -sf ~/.config/wofi/style/style$SWITCHTO.css ~/.config/wofi/style.css
+MAKO_FILE=~/.config/mako/config$SWITCHTO
+
+# Change the background image
+swww img --transition-type grow --transition-pos 0.965,0.98 --transition-duration 2 --transition-step 60 ~/.config/backgrounds/$MODESTR.png
+# Update SDDM image
+
+# Restart Mako and Waybar
+pkill mako
+mako -c $MAKO_FILE&
+pkill waybar
+waybar -s $CSS_FILE &
