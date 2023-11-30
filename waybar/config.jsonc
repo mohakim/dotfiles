@@ -45,7 +45,7 @@
   },
 
   "tray": {
-      "icon-size": 18,
+      "icon-size": 21,
       "spacing": 10
   },
 
@@ -53,7 +53,7 @@
   "backlight": {
       "device": "nvidia_0",
       "format": "{icon} {percent}%",
-      "format-icons": ["󰃞 ", "󰃟 ", "󰃠 "],
+      "format-icons": ["󰃞", "󰃟", "󰃠"],
       "on-scroll-up": "~/.config/waybar/brightness --inc",
       "on-scroll-down": "~/.config/waybar/brightness --dec",
       "min-length": 6
@@ -101,13 +101,13 @@
       "on-scroll-down": "~/.config/waybar/volume --dec",
       "scroll-step": 5,
       "format-icons": {
-          "headphone": " ",
-          "hands-free": " ",
-          "headset": " ",
-          "phone": " ",
-          "portable": " ",
+          "headphone": "",
+          "hands-free": "",
+          "headset": "",
+          "phone": "",
+          "portable": "",
           "car": " ",
-          "default": [" ", " ", " "]
+          "default": ["", "", ""]
       }
   }
 }

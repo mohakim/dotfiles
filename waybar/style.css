@@ -1,7 +1,7 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "JetBrainsMono Nerd Font";
+    font-family: "JetBrainsMono NF";
     font-weight: bold;
     font-size: 18px;
 }
@@ -83,6 +83,7 @@ tooltip label{
 
 #tray {
     border-radius: 10px;
+    font-size: 2em;
 }
 
 #workspaces {
@@ -107,4 +108,5 @@ tooltip label{
 
 #battery {
     color:  #33aa33;
+    padding-left: 12px;
 }

@@ -29,6 +29,8 @@ xfconf-query -c xsettings -p /Net/IconThemeName -s "$ICON_THEME"
 gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
 xfconf-query -c xsettings -p /Net/ThemeName -s "Adwaita$SWITCHTO"
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita$SWITCHTO"
+ln -sf /usr/share/icons/$ICON_THEME/22x22/panel/discord-tray.png /home/mohakim/.config/WebCord/links/discord-tray.svg
+ln -sf /usr/share/icons/$ICON_THEME/22x22/panel/discord-tray-unread.png /home/mohakim/.config/WebCord/links/discord-tray-unread.svg
 
 # Show a message
 notify-send -h string:x-canonical-private-synchronous:sys-notify -u low "Switching to $MODESTR Mode"
